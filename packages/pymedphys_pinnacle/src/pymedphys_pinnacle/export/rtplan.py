@@ -299,7 +299,7 @@ def convert_plan(plan, export_path):
                 wedgeinorout = cp['WedgeContext']['Orientation']
                 if wedgeangle == 'Fixed': # FIXME: This is a completely invalid placeholder. 
                     numberinname = '00'
-                if int(wedgeangle) == 15:
+                elif int(wedgeangle) == 15:
                     numberinname = '30'
                 elif int(wedgeangle) == 45:
                     numberinname = '20'

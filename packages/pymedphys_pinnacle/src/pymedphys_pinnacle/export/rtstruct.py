@@ -207,7 +207,7 @@ def read_roi(ds, plan):
                 closestvalue = abs(float(plan.primary_image.image_info[0]['TablePosition']) - float(points[-1]))
                 for s in plan.primary_image.image_info:
                     if abs(float(s['TablePosition']) - (-float(points[-1])/10.0)) <= closestvalue:
-                        closestvalue = abs(float(s['TablePosition']) - (-float(points[-1]/10)))
+                        closestvalue = abs(float(s['TablePosition']) - (-float(points[-1])/10.0))
                         contour_image.ReferencedSOPClassUID = '1.2.840.10008.5.1.4.1.1.2'
                         contour_image.ReferencedSOPInstanceUID = s['InstanceUID']
 
