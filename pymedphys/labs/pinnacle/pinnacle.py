@@ -114,6 +114,8 @@ class PinnacleExport:
             file within the raw Pinnacle data.
         """
 
+        # Add medical Record Number to self._patient_info
+
         if not self._patient_info:
             path_patient = os.path.join(self._path, "Patient")
             self.logger.debug("Reading patient data from: {0}".format(path_patient))
@@ -141,7 +143,8 @@ class PinnacleExport:
                     num = "0" + num
                 dob = dob + num
 
-            self._patient_info["DOB"] = dob
+            self._patient_info['DOB'] = dob
+            self._patient_info['MRN'] = self._patient_info['MedicalRecordNumber']
 
         return self._patient_info
 
