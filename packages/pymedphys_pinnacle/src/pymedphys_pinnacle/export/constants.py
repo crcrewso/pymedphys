@@ -92,6 +92,7 @@ colors['yellowgreen'] = ['173', '255', '47']
 colors['forest'] = ['34', '139', '34']
 colors['slateblue'] = ['16', '93', '157']
 colors['grey'] = ['127', '127', '127']
+colors['greyscale'] = ['200', '200', '200'] # FIXME: arbitrary value added so some patients would pass
 colors['aquamarine'] = ['127', '255', '212']
 colors['lightorange'] = ['239', '118', '51']
 colors['steelblue'] = ['70', '130', '180']

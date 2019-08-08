@@ -74,6 +74,7 @@ def export_cli(args):
     input_path = args.input_path
 
     # Create a logger to std out for cli
+        # since it will go to std out, wrapper needs to redirect std out to file, or argument needs to be added 
     log_level = logging.INFO
     logger = logging.getLogger(__name__)
     if verbose:
@@ -81,6 +82,8 @@ def export_cli(args):
     logger.setLevel(log_level)
 
     ch = logging.StreamHandler(sys.stdout)
+#    logFile = os.path.join(output_directory, output_directory.split('/')[-1] + ".txt" )
+#    ch = logging.StreamHandler(logFile)
     formatter = logging.Formatter(
         "%(asctime)s - %(levelname)s - %(message)s")
     ch.setFormatter(formatter)
@@ -180,6 +183,8 @@ def export_cli(args):
     if not output_directory:
         logger.error("Specifiy an output directory with -o")
         exit()
+
+    output_directory = os.path.join(output_directory,p.patient_info['MRN'])
 
     if not os.path.exists(output_directory):
         logger.info("Creating output directory: " + output_directory)

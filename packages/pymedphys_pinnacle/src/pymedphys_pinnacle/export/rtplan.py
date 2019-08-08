@@ -279,7 +279,7 @@ def convert_plan(plan, export_path):
                 wedgetype = "DYNAMIC"
                 wedgeflag = True
                 numwedges = 1
-                wedgeangle = cp['WedgeContext']['Angle']
+                wedgeangle = str(cp['WedgeContext']['Angle'])
                 wedgeinorout = ""
                 wedgeinorout = cp['WedgeContext']['Orientation']
                 if "WedgeBottomToTop" == wedgeinorout:
@@ -288,15 +288,17 @@ def convert_plan(plan, export_path):
                 elif "WedgeTopToBottom" == wedgeinorout:
                     wedgename = cp['WedgeContext']['WedgeName'].upper() + wedgeangle + "OUT"
                     wedgeorientation = '180'
-                plan.logger.debug("Wedge name = ", wedgename)
+                plan.logger.debug("Wedge name = " + wedgename)
             elif "UP" in cp['WedgeContext']['WedgeName']:
                 plan.logger.debug("Wedge present")
                 wedgetype = "STANDARD"
                 wedgeflag = True
                 numwedges = 1
-                wedgeangle = cp['WedgeContext']['Angle']
+                wedgeangle = str(cp['WedgeContext']['Angle'])
                 wedgeinorout = ""
                 wedgeinorout = cp['WedgeContext']['Orientation']
+                if wedgeangle == 'Fixed': # FIXME: This is a completely invalid placeholder. 
+                    numberinname = '00'
                 if int(wedgeangle) == 15:
                     numberinname = '30'
                 elif int(wedgeangle) == 45:
@@ -306,16 +308,16 @@ def convert_plan(plan, export_path):
                 elif int(wedgeangle) == 60:
                     numberinname = '15'
                 if "WedgeRightToLeft" == wedgeinorout:
-                    wedgename = "W" + str(int(wedgeangle)) + "R" + numberinname  # + "U"
+                    wedgename = "W" + wedgeangle + "R" + numberinname  # + "U"
                     wedgeorientation = '90'  # temporary until I find out what to put here
                 elif "WedgeLeftToRight" == wedgeinorout:
-                    wedgename = "W" + str(int(wedgeangle)) + "L" + numberinname  # + "U"
+                    wedgename = "W" + wedgeangle + "L" + numberinname  # + "U"
                     wedgeorientation = '270'
                 elif "WedgeTopToBottom" == wedgeinorout:
-                    wedgename = "W" + str(int(wedgeangle)) + "OUT" + numberinname  # + "U"
+                    wedgename = "W" + wedgeangle + "OUT" + numberinname  # + "U"
                     wedgeorientation = '180'  # temporary until I find out what to put here
                 elif "WedgeBottomToTop" == wedgeinorout:
-                    wedgename = "W" + str(int(wedgeangle)) + "IN" + numberinname  # + "U"
+                    wedgename = "W" + wedgeangle + "IN" + numberinname  # + "U"
                     wedgeorientation = '0'  # temporary until I find out what to put here
                 plan.logger.debug("Wedge name = ", wedgename)
 
