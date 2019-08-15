@@ -142,7 +142,10 @@ def convert_dose(plan, export_path):
 
     ds.StudyInstanceUID = image_info["StudyInstanceUID"]
     ds.FrameOfReferenceUID = image_info["FrameUID"]
-    ds.StudyID = plan.primary_image.image["StudyID"]
+    try:
+        ds.StudyID = plan.primary_image.image["StudyID"]
+    except:
+        ds.StudyID = "0000"
 
     # Assume zero struct shift for now (may not the case for versions below Pinnacle 9)
     x_shift = 0
