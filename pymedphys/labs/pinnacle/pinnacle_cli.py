@@ -44,6 +44,7 @@ import os
 import sys
 import tarfile
 import tempfile
+import traceback
 
 from .pinnacle import PinnacleExport
 
@@ -234,10 +235,25 @@ def export_cli(args):
             )
 
     if "RTSTRUCT" in modality:
-        p.export_struct(plan=plan, export_path=output_directory)
+        try:
+            p.export_struct(plan=plan, export_path=output_directory)
+        except:
+            logger.debug("Structure set conversion encountered an exception\nStack Trace:\n")
+            logger.debug(traceback.format_exc())
+            logger.error("Structure set could not be converted")
 
     if "RTPLAN" in modality:
-        p.export_plan(plan=plan, export_path=output_directory)
+        try:
+            p.export_plan(plan=plan, export_path=output_directory)
+        except:
+            logger.debug("Plan conversion encountered an exception\nStack Trace:\n")
+            logger.debug(traceback.format_exc())
+            logger.error("Plancould not be converted")
 
     if "RTDOSE" in modality:
-        p.export_dose(plan=plan, export_path=output_directory)
+        try:
+            p.export_dose(plan=plan, export_path=output_directory)
+        except:
+            logger.debug("Dose conversion encountered an exception\nStack Trace:\n")
+            logger.debug(traceback.format_exc())
+            logger.error("Dose could not be converted")
