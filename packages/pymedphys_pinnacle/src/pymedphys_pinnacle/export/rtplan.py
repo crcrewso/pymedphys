@@ -50,6 +50,7 @@
 
 import pydicom
 import numpy as np
+import traceback
 
 from pydicom.dataset import Dataset, FileDataset
 from pydicom.sequence import Sequence
@@ -123,7 +124,10 @@ def convert_plan(plan, export_path):
 
     ds.StudyInstanceUID = image_info["StudyInstanceUID"]
     ds.SeriesInstanceUID = planInstanceUID
-    ds.StudyID = plan.primary_image.image["StudyID"]
+    try:
+        ds.StudyID = plan.primary_image.image["StudyID"]
+    except:
+        ds.StudyID = "0000"
 
     ds.FrameOfReferenceUID = image_info["FrameUID"]
     ds.PositionReferenceIndicator = ""
@@ -235,6 +239,7 @@ def convert_plan(plan, export_path):
         y1 = ""
         y2 = ""
         leafpositions = []
+        # TODO: Properly handle 0 MLC control points. 
         for cp in cp_manager['ControlPointList']:
 
             metersetweight.append(cp['Weight'])
@@ -247,8 +252,8 @@ def convert_plan(plan, export_path):
                 y2 = cp['TopJawPosition'] * 10
             if y1 == "":
                 y1 = -cp['BottomJawPosition'] * 10
-
             points = cp['MLCLeafPositions']['RawData']['Points[]'].split(',')
+            
             p_count = 0
             leafpositions1 = []
             leafpositions2 = []
