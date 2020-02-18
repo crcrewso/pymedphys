@@ -120,7 +120,10 @@ def convert_plan(plan, export_path):
 
     ds.StudyInstanceUID = image_info["StudyInstanceUID"]
     ds.SeriesInstanceUID = planInstanceUID
-    ds.StudyID = plan.primary_image.image["StudyID"]
+    try:
+        ds.StudyID = plan.primary_image.image["StudyID"]
+    except:
+        ds.StudyID = "0000"
 
     ds.FrameOfReferenceUID = image_info["FrameUID"]
     ds.PositionReferenceIndicator = ""
@@ -247,6 +250,7 @@ def convert_plan(plan, export_path):
         y1 = ""
         y2 = ""
         leafpositions = []
+        # TODO: Properly handle 0 MLC control points.
         for cp in cp_manager["ControlPointList"]:
 
             metersetweight.append(cp["Weight"])
@@ -321,8 +325,10 @@ def convert_plan(plan, export_path):
                 wedgeangle = cp["WedgeContext"]["Angle"]
                 wedgeinorout = ""
                 wedgeinorout = cp["WedgeContext"]["Orientation"]
-                if int(wedgeangle) == 15:
-                    numberinname = "30"
+                if wedgeangle == "Fixed": # FIXME: This is a completely invalid placeholder. Necessary for fixed wedges
+                    numberinname = '00'
+                elif int(wedgeangle) == 15:
+                    numberinname = '30'
                 elif int(wedgeangle) == 45:
                     numberinname = "20"
                 elif int(wedgeangle) == 30:

@@ -387,7 +387,9 @@ def convert_struct(plan, export_path):
             "No primary image found for plan. Unable to generate RTSTRUCT."
         )
         return
-
+    if len(plan.primary_image.image_info) <1:
+        plan.logger.error("plan's primary image has no details. Unable to generate RTSTRUCT.")
+        return
     patient_info = plan.pinnacle.patient_info
 
     struct_sop_instuid = plan.struct_inst_uid
@@ -441,8 +443,10 @@ def convert_struct(plan, export_path):
     ds.PatientSex = patient_info["Gender"][0]
     ds.PatientBirthDate = patient_info["DOB"]
     ds.StructureSetLabel = plan.plan_info["PlanName"]
-    ds.StudyID = plan.primary_image.image["StudyID"]
-
+    try:
+        ds.StudyID = plan.primary_image.image["StudyID"]
+    except:
+        ds.StudyID = "0000"
     datetimesplit = plan.plan_info["ObjectVersion"]["WriteTimeStamp"].split()
     # Read more accurate date from trial file if it is available
     trial_info = plan.trial_info
