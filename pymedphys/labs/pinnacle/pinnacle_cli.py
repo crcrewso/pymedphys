@@ -66,7 +66,7 @@ def export_cli(args):
     input_path = args.input_path
 
     # Create a logger to std out for cli
-        # since it will go to std out, wrapper needs to redirect std out to file, or argument needs to be added 
+    # since it will go to std out, wrapper needs to redirect std out to file, or argument needs to be added
     log_level = logging.INFO
     logger = logging.getLogger(__name__)
     if verbose:
@@ -181,7 +181,7 @@ def export_cli(args):
         logger.error("Specifiy an output directory with -o")
         exit()
 
-    output_directory = os.path.join(output_directory,p.patient_info['MRN'])
+    output_directory = os.path.join(output_directory, p.patient_info["MRN"])
 
     if not os.path.exists(output_directory):
         logger.info("Creating output directory: " + output_directory)
@@ -238,7 +238,9 @@ def export_cli(args):
         try:
             p.export_struct(plan=plan, export_path=output_directory)
         except:
-            logger.debug("Structure set conversion encountered an exception\nStack Trace:\n")
+            logger.debug(
+                "Structure set conversion encountered an exception\nStack Trace:\n"
+            )
             logger.debug(traceback.format_exc())
             logger.error("Structure set could not be converted")
 

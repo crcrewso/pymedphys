@@ -325,10 +325,12 @@ def convert_plan(plan, export_path):
                 wedgeangle = cp["WedgeContext"]["Angle"]
                 wedgeinorout = ""
                 wedgeinorout = cp["WedgeContext"]["Orientation"]
-                if wedgeangle == "Fixed": # FIXME: This is a completely invalid placeholder. Necessary for fixed wedges
-                    numberinname = '00'
+                if (
+                    wedgeangle == "Fixed"
+                ):  # FIXME: This is a completely invalid placeholder. Necessary for fixed wedges
+                    numberinname = "00"
                 elif int(wedgeangle) == 15:
-                    numberinname = '30'
+                    numberinname = "30"
                 elif int(wedgeangle) == 45:
                     numberinname = "20"
                 elif int(wedgeangle) == 30:

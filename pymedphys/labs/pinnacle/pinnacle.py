@@ -143,8 +143,8 @@ class PinnacleExport:
                     num = "0" + num
                 dob = dob + num
 
-            self._patient_info['DOB'] = dob
-            self._patient_info['MRN'] = self._patient_info['MedicalRecordNumber']
+            self._patient_info["DOB"] = dob
+            self._patient_info["MRN"] = self._patient_info["MedicalRecordNumber"]
 
         return self._patient_info
 

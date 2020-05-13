@@ -387,8 +387,10 @@ def convert_struct(plan, export_path):
             "No primary image found for plan. Unable to generate RTSTRUCT."
         )
         return
-    if len(plan.primary_image.image_info) <1:
-        plan.logger.error("plan's primary image has no details. Unable to generate RTSTRUCT.")
+    if len(plan.primary_image.image_info) < 1:
+        plan.logger.error(
+            "plan's primary image has no details. Unable to generate RTSTRUCT."
+        )
         return
     patient_info = plan.pinnacle.patient_info
 
