@@ -148,5 +148,16 @@ scratch-*
 
 v*.tar.gz
 
+<<<<<<< HEAD
 *.py.*.py
 *.exe
+=======
+# Paul's custom additions
+Ubuntu_GitHub
+Ubuntu_GitHub.pub
+
+github_W7
+github_W7.pub
+microsoft.gpg
+packages/pymedphys_pinnacle/src/pymedphys_pinnacle/export/.vscode/settings.json
+>>>>>>> 0ba4c2519770f6eaae7e5b298570509a609321fc
