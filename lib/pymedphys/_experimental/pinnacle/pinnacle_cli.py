@@ -61,6 +61,7 @@ def export_cli(args):
     image_series = args.image
     uid_prefix = args.uid_prefix
     roiskip = args.roiskip
+    #    volumeInfo = args.volumeInfo
 
     input_path = args.input_path
 

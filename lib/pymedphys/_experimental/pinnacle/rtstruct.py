@@ -121,6 +121,32 @@ def find_iso_center(plan):
     plan.logger.debug("Isocenter: %s", iso_center)
 
 
+def find_transform(plan):
+    transforms = plan.volumeinfo
+    for volume in transforms:
+        if transforms["Name"].endswith(plan.trial_info["Name"]):
+            plan.Volume = volume
+            continue
+
+    data = plan.Volume["LocalToWorldTransform"]["Data"]
+    plan.raw_transform = data["Points[]"]
+    try:
+        found_x = re.search("1,0,0,(.+?),", plan.raw_transform).group(1)
+        found_y = re.search("0,1,0,(.+?),", plan.raw_transform).group(1)
+        found_z = re.search("0,0,1,(.+?),", plan.raw_transform).group(1)
+    except AttributeError:
+        # AAA, ZZZ not found in the original string
+        found_x = "0"  # apply your error handling
+        found_y = "0"
+        found_z = "0"
+    plan.transform_x = float(found_x) * 10.0
+    plan.transform_y = float(found_y) * 10.0
+    plan.transform_z = float(found_z) * 10.0
+    plan.transform_x_rot = plan.Volume["VolRotDelta .X"]
+    plan.transform_y_rot = plan.Volume["VolRotDelta .Y"]
+    plan.transform_z_rot = plan.Volume["VolRotDelta .Z"]
+
+
 # Read points and insert them into the dicom dataset
 def read_points(ds, plan):
 
@@ -302,9 +328,9 @@ def read_roi(ds, plan, skip_pattern):
                     ]
 
                 if len(points) == 3:
-                    points[0] = round(points[0], 5)
-                    points[1] = round(points[1], 5)
-                    points[2] = round(points[2], 5)
+                    points[0] = round(points[0], 5) + plan.transform_x
+                    points[1] = round(points[1], 5) + plan.transform_y
+                    points[2] = round(points[2], 5) + plan.transform_z
 
                 points = points + curr_points
             if "Beginning of ROI" in line:  # Start of ROI
@@ -534,6 +560,7 @@ def convert_struct(plan, export_path, skip_pattern):
 
     # Determine ISO Center
     find_iso_center(plan)
+    find_transform(plan)
 
     ds = read_points(ds, plan)
     ds = read_roi(ds, plan, skip_pattern)

@@ -261,8 +261,8 @@ dist
 # IDE configuration
 .idea/
 .vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
+.vscode/settings.json
+.vscode/extensions.json
 
 # Test results
 junit/
