@@ -158,6 +158,80 @@ def convert_plan(plan, export_path):
     num_fractions = 0
     beam_count = 0
     beam_list = trial_info["BeamList"] if trial_info["BeamList"] else []
+    #get the mlc bounds from machine_info
+    leafPairList = []
+    if "MultiLeaf" in machine_info:
+        if "LeafPairList" in machine_info["MultiLeaf"]:
+            leafPairList = machine_info["MultiLeaf"]["LeafPairList"]
+    bounds = []
+    for leafItem in leafPairList:
+        bounds.append(str(int(leafItem["YCenterPosition"] - leafItem["Width"] / 2 ) * 10))
+#Assume MLC120
+    if bounds.count == 0:
+        bounds = [
+            "-200",
+            "-190",
+            "-180",
+            "-170",
+            "-160",
+            "-150",
+            "-140",
+            "-130",
+            "-120",
+            "-110",
+            "-100",
+            "-95",
+            "-90",
+            "-85",
+            "-80",
+            "-75",
+            "-70",
+            "-65",
+            "-60",
+            "-55",
+            "-50",
+            "-45",
+            "-40",
+            "-35",
+            "-30",
+            "-25",
+            "-20",
+            "-15",
+            "-10",
+            "-5",
+            "0",
+            "5",
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "35",
+            "40",
+            "45",
+            "50",
+            "55",
+            "60",
+            "65",
+            "70",
+            "75",
+            "80",
+            "85",
+            "90",
+            "95",
+            "100",
+            "110",
+            "120",
+            "130",
+            "140",
+            "150",
+            "160",
+            "170",
+            "180",
+            "190",
+            "200",
+        ]
+
     if len(beam_list) == 0:
         plan.logger.warning("No Beams found in Trial. Unable to generate RTPLAN.")
         return
@@ -183,7 +257,11 @@ def convert_plan(plan, export_path):
         ds.BeamSequence[beam_count - 1].BeamNumber = beam_count
         ds.BeamSequence[beam_count - 1].TreatmentDeliveryType = "TREATMENT"
         ds.BeamSequence[beam_count - 1].ReferencedPatientSetupNumber = beam_count
-        ds.BeamSequence[beam_count - 1].SourceAxisDistance = "1000"
+        #Try to get SAD from machine first
+        if "SAD" in machine_info:
+            ds.BeamSequence[beam_count - 1].SourceAxisDistance = str(machine_info["SAD"] * 10)
+        else:
+            ds.BeamSequence[beam_count - 1].SourceAxisDistance = "1000"
         ds.BeamSequence[beam_count - 1].FinalCumulativeMetersetWeight = "1"
         ds.BeamSequence[beam_count - 1].PrimaryDosimeterUnit = "MU"
         ds.BeamSequence[
@@ -196,7 +274,7 @@ def convert_plan(plan, export_path):
             0
         ].FluenceMode = "STANDARD"
 
-        ds.BeamSequence[beam_count - 1].BeamName = beam["FieldID"]
+        ds.BeamSequence[beam_count - 1].BeamName = beam["FieldID"] if beam["FieldID"] else beam["Name"]
         ds.BeamSequence[beam_count - 1].BeamDescription = beam["Name"]
 
         if "Photons" in beam["Modality"]:
@@ -635,69 +713,7 @@ def convert_plan(plan, export_path):
                 ds.BeamSequence[beam_count - 1].BeamLimitingDeviceSequence[
                     2
                 ].NumberOfLeafJawPairs = (p_count / 2)
-                bounds = [
-                    "-200",
-                    "-190",
-                    "-180",
-                    "-170",
-                    "-160",
-                    "-150",
-                    "-140",
-                    "-130",
-                    "-120",
-                    "-110",
-                    "-100",
-                    "-95",
-                    "-90",
-                    "-85",
-                    "-80",
-                    "-75",
-                    "-70",
-                    "-65",
-                    "-60",
-                    "-55",
-                    "-50",
-                    "-45",
-                    "-40",
-                    "-35",
-                    "-30",
-                    "-25",
-                    "-20",
-                    "-15",
-                    "-10",
-                    "-5",
-                    "0",
-                    "5",
-                    "10",
-                    "15",
-                    "20",
-                    "25",
-                    "30",
-                    "35",
-                    "40",
-                    "45",
-                    "50",
-                    "55",
-                    "60",
-                    "65",
-                    "70",
-                    "75",
-                    "80",
-                    "85",
-                    "90",
-                    "95",
-                    "100",
-                    "110",
-                    "120",
-                    "130",
-                    "140",
-                    "150",
-                    "160",
-                    "170",
-                    "180",
-                    "190",
-                    "200",
-                ]
+
                 ds.BeamSequence[beam_count - 1].BeamLimitingDeviceSequence[
                     2
                 ].LeafPositionBoundaries = bounds
@@ -912,69 +928,6 @@ def convert_plan(plan, export_path):
                 ds.BeamSequence[beam_count - 1].BeamLimitingDeviceSequence[
                     2
                 ].NumberOfLeafJawPairs = (p_count / 2)
-                bounds = [
-                    "-200",
-                    "-190",
-                    "-180",
-                    "-170",
-                    "-160",
-                    "-150",
-                    "-140",
-                    "-130",
-                    "-120",
-                    "-110",
-                    "-100",
-                    "-95",
-                    "-90",
-                    "-85",
-                    "-80",
-                    "-75",
-                    "-70",
-                    "-65",
-                    "-60",
-                    "-55",
-                    "-50",
-                    "-45",
-                    "-40",
-                    "-35",
-                    "-30",
-                    "-25",
-                    "-20",
-                    "-15",
-                    "-10",
-                    "-5",
-                    "0",
-                    "5",
-                    "10",
-                    "15",
-                    "20",
-                    "25",
-                    "30",
-                    "35",
-                    "40",
-                    "45",
-                    "50",
-                    "55",
-                    "60",
-                    "65",
-                    "70",
-                    "75",
-                    "80",
-                    "85",
-                    "90",
-                    "95",
-                    "100",
-                    "110",
-                    "120",
-                    "130",
-                    "140",
-                    "150",
-                    "160",
-                    "170",
-                    "180",
-                    "190",
-                    "200",
-                ]
                 ds.BeamSequence[beam_count - 1].BeamLimitingDeviceSequence[
                     2
                 ].LeafPositionBoundaries = bounds
