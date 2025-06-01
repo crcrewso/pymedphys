@@ -52,6 +52,35 @@ def get_surface_entry_point_with_fallback(plan) -> Point:
     return source_entry_point
 
 
+def get_surface_entry_point_with_manual_fallback(plan, fallback_source_to_surface=None) -> Point:
+    try:
+        return get_surface_entry_point(plan)
+    except DICOMEntryMissing:
+        pass
+
+    require_gantries_be_zero(plan)
+
+    iso_raw = get_single_value_from_control_points(plan, "IsocenterPosition")
+    iso = Point(*[float(item) for item in iso_raw])
+    if fallback_source_to_surface is not None:
+        try:
+            source_to_surface = get_single_value_from_control_points(
+                plan, "SourceToSurfaceDistance"
+            )
+        except DICOMEntryMissing:
+            source_to_surface = fallback_source_to_surface
+    else:
+        source_to_surface = get_single_value_from_control_points(
+            plan, "SourceToSurfaceDistance"
+        )
+    source_to_axis = get_single_value_from_beams(plan, "SourceAxisDistance")
+
+    new_y_value = iso.y + source_to_surface - source_to_axis
+    source_entry_point = Point(iso.x, new_y_value, iso.z)
+
+    return source_entry_point
+
+
 def get_single_value_from_control_points(plan, keyword):
     """Get a named keyword from all control points.
 
@@ -203,7 +232,7 @@ def get_gantry_angles_from_dicom(dicom_dataset):
 
 
 def get_leaf_jaw_positions_for_type(
-    beam_limiting_device_position_sequences, rt_beam_limiting_device_type
+        beam_limiting_device_position_sequences, rt_beam_limiting_device_type
 ):
     leaf_jaw_positions = []
 

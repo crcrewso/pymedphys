@@ -79,7 +79,7 @@ def dicom_dose_interpolate(interp_coords, dicom_dose_dataset):
     return result
 
 
-def depth_dose(depths, dose_dataset, plan_dataset):
+def depth_dose(depths, dose_dataset, plan_dataset, fallback_sourcetosurface_distance=None):
     """Interpolates dose for defined depths within a DICOM dose dataset.
 
     Since the DICOM dose dataset is in CT coordinates the corresponding
@@ -104,12 +104,26 @@ def depth_dose(depths, dose_dataset, plan_dataset):
     plan_dataset : pydicom.dataset.Dataset
         The RT DICOM plan used to extract surface parameters and verify gantry
         angle 0 beams are used.
+    fallback_sourcetosurface_distance : float, optional
+        Distance from the radiation source to the surface of the phantom in mmm.
+        Allows a user to provide a custom fallback source to surface distance if the SourceToSurfaceDistance DICOM
+        Element is not present in the plan dataset. This is useful for cases where some Treatment Planning Systems that
+        Automatically calculate the SourceToSurfaceDistance based on the phantom do not allow a user to easily enter the
+        manual value, and do not provide the Calculated SourceToSurfaceDistance in control point.
+        WARNING: This is a workaround and should be used with caution. If the SourceToSurfaceDistance is present in the
+        plan dataset, this value will be ignored and the SourceToSurfaceDistance will be used instead.
     """
     orientation.require_dicom_patient_position(dose_dataset, "HFS")
     require_gantries_be_zero(plan_dataset)
     depths = np.array(depths, copy=False)
 
-    surface_entry_point = get_surface_entry_point_with_fallback(plan_dataset)
+    if (fallback_sourcetosurface_distance is not None):
+        from pymedphys._dicom.rtplan.core import get_surface_entry_point_with_manual_fallback
+        surface_entry_point = get_surface_entry_point_with_manual_fallback(plan_dataset, fallback_sourcetosurface_distance)
+    else:
+        surface_entry_point = get_surface_entry_point_with_fallback(plan_dataset)
+
+
     depth_adjust = surface_entry_point.y
 
     y = depths + depth_adjust
